@@ -37,7 +37,16 @@ jobs:
           bun run typecheck
           bun test
 
-      - name: Publish
-        run: npm publish --provenance --access public
+      # NPM_TOKEN is a stage-only token (npm's safer CI default), so this
+      # submits to the staging area rather than going live. A maintainer then
+      # approves it with 2FA:
+      #
+      #   npm stage list          # find the stage id
+      #   npm stage approve <id>  # or approve at npmjs.com
+      #
+      # Staging a package that does not exist yet first publishes a placeholder
+      # 0.0.0-stage version, so subsequent releases need no special handling.
+      - name: Stage for publishing
+        run: npm stage publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

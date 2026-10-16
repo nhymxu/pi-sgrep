@@ -174,7 +174,9 @@ SGREP_BIN=/path/to/sgrep bun run test/manual-verify.ts
 
 ## Releasing
 
-Publishing runs from GitHub Actions, so the published tarball gets an npm provenance statement (a Sigstore attestation linking the package back to this repository). Create the `NPM_TOKEN` secret, then publish a GitHub release:
+Publishing runs from GitHub Actions, so the staged tarball gets an npm provenance statement (a Sigstore attestation linking the package back to this repository).
+
+`NPM_TOKEN` is a **stage-only** token, so the workflow submits to npm's staging area instead of going live. One approve step finishes the release:
 
 ```bash
 npm version patch   # or minor / major
@@ -182,7 +184,17 @@ git push --follow-tags
 gh release create v0.1.1
 ```
 
-The workflow typechecks and runs the test suite before publishing.
+Then review and approve, with 2FA:
+
+```bash
+npm stage list            # find the stage id
+npm stage view <stage-id> # inspect exactly what will be published
+npm stage approve <stage-id>
+```
+
+or approve from the **Staged Packages** tab on npmjs.com. The workflow typechecks and runs the test suite before staging, so a red build never reaches the queue.
+
+To publish without the approval step, regenerate `NPM_TOKEN` with the "Read and write (publish and stage)" permission and change the workflow's final step to `npm publish --provenance --access public`.
 
 To check a tarball locally before it goes out — installs it into a throwaway consumer and loads it through pi's loader, exactly as `pi install` would:
 
