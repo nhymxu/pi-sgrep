@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nhymxu/pi-sgrep/main/pi-sgrep.schema.json",
+  "title": "pi-sgrep configuration",
+  "description": "Configuration for the pi-sgrep extension. Place this file at ~/.pi/agent/pi-sgrep.json, or set PI_CODING_AGENT_DIR to relocate it.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path to this schema, for editor completion."
+    },
+    "binary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path to the sgrep binary. Resolved through PATH, then ~/.cargo/bin and the Homebrew prefixes, when omitted. Also settable with PI_SGREP_BIN or SGREP_BIN."
+    },
+    "rgPath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path to the ripgrep binary used by the sgrep_rank tool. Resolved through PATH when omitted."
+    },
+    "cacheDir": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Directory for sgrep models and search indexes, passed as --cache-dir when the installed build supports it. Models land in <dir>/hub and indexes in <dir>/index."
+    },
+    "model": {
+      "enum": ["auto", "code", "text"],
+      "description": "Embedding model. auto uses text embeddings when every candidate passage is prose (.md, .txt) and code embeddings otherwise. Default auto."
+    },
+    "timeoutMs": {
+      "type": "integer",
+      "minimum": 1000,
+      "maximum": 3600000,
+      "description": "Per-search timeout in milliseconds. The first search in a directory also downloads the embedding model. Default 120000."
+    },
+    "maxResults": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "description": "Default number of ranked passages returned per search. Default 8."
+    },
+    "maxResultsCap": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "description": "Hard ceiling on the limit a model may request. Default 50."
+    },
+    "maxLinesPerResult": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2000,
+      "description": "Maximum source lines printed per result before truncation. Default 80."
+    },
+    "maxTotalLines": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5000,
+      "description": "Maximum source lines printed across all results of one call. Default 240."
+    },
+    "maxLineLength": {
+      "type": "integer",
+      "minimum": 40,
+      "maximum": 2000,
+      "description": "Maximum characters kept per source line. Default 500."
+    },
+    "allowLargeRoots": {
+      "type": "boolean",
+      "description": "Allow searching $HOME or the filesystem root. Refused by default, because sgrep would index everything under them."
+    },
+    "extraArgs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Extra arguments appended to every sgrep invocation, for options this extension does not surface."
+    }
+  }
+}
