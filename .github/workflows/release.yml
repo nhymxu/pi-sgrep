@@ -17,10 +17,12 @@ jobs:
       - uses: actions/checkout@v6
 
       # The toolchain is bun: bun.lock is the lockfile and the test runner is
-      # bun test.
+      # bun test. Pinned because the install step is --frozen-lockfile, so a
+      # future bun that changes the lockfile format would otherwise fail the
+      # release for no real reason.
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          bun-version: "1.4.3"
 
       - uses: actions/setup-node@v6
         with:
