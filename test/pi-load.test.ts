@@ -13,16 +13,20 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { discoverAndLoadExtensions, type LoadExtensionsResult } from "@earendil-works/pi-coding-agent";
-import { FAKE_SGREP } from "./helpers/support.ts";
+import { FAKE_RG, FAKE_SGREP } from "./helpers/support.ts";
 
 const EXTENSION_PATH = fileURLToPath(new URL("../src/index.ts", import.meta.url));
 const WORKSPACE = mkdtempSync(path.join(tmpdir(), "pi-sgrep-load-cwd-"));
 
 async function loadWithAgentDir(config: Record<string, unknown>): Promise<LoadExtensionsResult> {
   const dir = mkdtempSync(path.join(tmpdir(), "pi-sgrep-load-"));
+  // Both binaries are faked. Leaving rgPath unset would resolve the real
+  // ripgrep from PATH, so the suite would silently depend on the machine: on a
+  // runner without rg, sgrep_rank is correctly not registered and the tests
+  // would fail for the wrong reason.
   writeFileSync(
     path.join(dir, "pi-sgrep.json"),
-    JSON.stringify({ binary: FAKE_SGREP, ...config }),
+    JSON.stringify({ binary: FAKE_SGREP, rgPath: FAKE_RG, ...config }),
   );
 
   const previous = process.env.PI_CODING_AGENT_DIR;
