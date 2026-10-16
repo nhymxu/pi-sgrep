@@ -4,6 +4,18 @@
   "description": "pi extension: sgrep-powered semantic code search (plain-English retrieval over a local index)",
   "type": "module",
   "license": "MIT",
+  "author": {
+    "name": "nhymxu",
+    "url": "https://github.com/nhymxu"
+  },
+  "homepage": "https://github.com/nhymxu/pi-sgrep#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhymxu/pi-sgrep.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nhymxu/pi-sgrep/issues"
+  },
   "keywords": [
     "pi",
     "pi-package",
@@ -25,6 +37,9 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "bun test test/",
     "typecheck": "tsc --noEmit"

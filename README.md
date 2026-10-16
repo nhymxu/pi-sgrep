@@ -172,6 +172,25 @@ PI_SGREP_E2E=1 SGREP_E2E_BIN=/path/to/sgrep bun test test/e2e.test.ts
 SGREP_BIN=/path/to/sgrep bun run test/manual-verify.ts
 ```
 
+## Releasing
+
+Publishing runs from GitHub Actions, so the published tarball gets an npm provenance statement (a Sigstore attestation linking the package back to this repository). Create the `NPM_TOKEN` secret, then publish a GitHub release:
+
+```bash
+npm version patch   # or minor / major
+git push --follow-tags
+gh release create v0.1.1
+```
+
+The workflow typechecks and runs the test suite before publishing.
+
+To check a tarball locally before it goes out — installs it into a throwaway consumer and loads it through pi's loader, exactly as `pi install` would:
+
+```bash
+npm pack
+node scripts/verify-tarball.mjs pi-sgrep-0.1.0.tgz
+```
+
 ## Layout
 
 ```text
@@ -182,4 +201,6 @@ src/
   format.ts   line-numbered output with truncation notices
   render.ts   TUI/HTML transcript rendering
   config.ts   pi-sgrep.json parsing and flag/env/file precedence
+scripts/
+  verify-tarball.mjs  installs a packed tarball and loads it via pi
 ```
