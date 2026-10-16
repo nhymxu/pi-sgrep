@@ -24,12 +24,12 @@ jobs:
         with:
           bun-version: "1.4.3"
 
+      # setup-node caches by default; the `cache` key cannot be set to false on
+      # v6, so leave it unset. No build step depends on the npm cache anyway.
       - uses: actions/setup-node@v6
         with:
           node-version: "24.x"
           registry-url: "https://registry.npmjs.org"
-          # Never reuse a cache in a release build.
-          cache: false
 
       - name: Verify
         run: |
